@@ -2,13 +2,10 @@ package org.example.shortlinkgenerator.services;
 
 import lombok.AllArgsConstructor;
 import org.example.shortlinkgenerator.reposotories.ShortUrlRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -23,32 +20,25 @@ public class AsyncShortUrlGeneratorService {
 
     @Async
     public void generateAndSaveShortUrls() {
-        Set<String> newShortUrls = generateLimitedShortUrl(COUNT_OF_URL_GENERATE);
-        saveSet(REDIS_SHORT_URL_SET_KEY, newShortUrls);
-    }
-
-    private Set<String> generateLimitedShortUrl(int limit) {
-        Set<String> setOfUniqShortUrl = new HashSet<>();
-        for (int i = 0; i < limit; i++) {
-            setOfUniqShortUrl.add(generateShortUrl());
+        for (int i = 0; i < COUNT_OF_URL_GENERATE; i++) {
+            String newShortUrl = generateUniqueShortUrl();
+            saveUrl(REDIS_SHORT_URL_SET_KEY, newShortUrl);
         }
-        return setOfUniqShortUrl;
     }
 
-    private String generateShortUrl() {
-        String url = generateUUID();
-
-        while (shortUrlRepository.findByShortUrl(url).isPresent())
-            url = generateUUID();
-
+    private String generateUniqueShortUrl() {
+        String url;
+        do {
+            url = generateShortUrl();
+        } while (shortUrlRepository.findByShortUrl(url).isPresent());
         return url;
     }
 
-    private String generateUUID() {
+    private String generateShortUrl() {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
-    private void saveSet(String key, Set<String> values) {
-        redisTemplate.opsForSet().add(key, values.toArray(new String[0]));
+    private void saveUrl(String key, String value) {
+        redisTemplate.opsForSet().add(key, value);
     }
 }
