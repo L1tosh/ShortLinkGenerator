@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "short_link")
+@Table(name = "short_url")
 public class ShortUrl {
 
     @Id
@@ -17,12 +17,12 @@ public class ShortUrl {
     private Long id;
 
     @NotNull
-    @Column(name = "short_link", unique = true)
+    @Column(name = "short_url", unique = true)
     private String shortUrl;
 
     @NotNull
-    @Column(name = "post_id")
-    private Long postId;
+    @Column(name = "url")
+    private String url;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

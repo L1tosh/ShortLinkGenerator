@@ -22,24 +22,24 @@ public class ShortUrlController {
     private final ShortLUrlService shortLUrlService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> crateShortLink(@RequestBody @Positive @NotNull @Valid Long postId) {
-        String uniqueShortUrl = shortLUrlService.saveShortUrl(postId);
+    public ResponseEntity<String> crateShortLink(@RequestBody @Positive @NotNull @Valid String url) {
+        String uniqueShortUrl = shortLUrlService.saveShortUrl(url);
         return new ResponseEntity<>(uniqueShortUrl, HttpStatus.OK);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Long> getPostIdByShortUrl(@RequestParam @NotNull String url) {
-        Optional<ShortUrl> shortUrl = shortLUrlService.getShortUrl(url);
+    public ResponseEntity<String> getPostIdByShortUrl(@RequestParam @NotNull String shortUrl) {
+        Optional<ShortUrl> searchedShortUrl = shortLUrlService.getShortUrl(shortUrl);
 
         if (shortUrl.isEmpty())
             throw new RuntimeException("Post does not have a short link");
 
-        return new ResponseEntity<>(shortUrl.get().getPostId(), HttpStatus.OK);
+        return new ResponseEntity<>(searchedShortUrl.get().getUrl(), HttpStatus.OK);
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<Boolean> deleteShortUrl(@RequestBody @NotNull Long postId) {
-        return new ResponseEntity<>(shortLUrlService.deleteShortUrl(postId), HttpStatus.OK);
+    public ResponseEntity<Boolean> deleteShortUrl(@RequestBody @NotNull String url) {
+        return new ResponseEntity<>(shortLUrlService.deleteShortUrl(url), HttpStatus.OK);
     }
 
 

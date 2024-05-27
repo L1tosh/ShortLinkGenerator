@@ -26,15 +26,15 @@ public class ShortLUrlService {
     private static final int RETRY_DELAY_MS = 200;
 
     @Transactional
-    public String saveShortUrl(Long postId) {
-        if (shortUrlRepository.findByPostId(postId).isPresent())
+    public String saveShortUrl(String url) {
+        if (shortUrlRepository.findByUrl(url).isPresent())
             throw new ShortUrlCreateException("This post already has a short link");
 
         String uniqueShortUrl = getUniqueShortUrlFromRedis();
 
         ShortUrl shortUrl = new ShortUrl();
         shortUrl.setShortUrl(uniqueShortUrl);
-        shortUrl.setPostId(postId);
+        shortUrl.setUrl(url);
         shortUrl.setCreatedAt(LocalDateTime.now());
 
         shortUrlRepository.save(shortUrl);
@@ -43,8 +43,8 @@ public class ShortLUrlService {
     }
 
     @Transactional
-    public Boolean deleteShortUrl(Long postId) {
-        shortUrlRepository.deleteByPostId(postId);
+    public Boolean deleteShortUrl(String url) {
+        shortUrlRepository.deleteByUrl(url);
         return true;
     }
 
