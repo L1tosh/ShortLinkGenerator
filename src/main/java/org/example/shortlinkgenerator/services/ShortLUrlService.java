@@ -27,19 +27,25 @@ public class ShortLUrlService {
 
     @Transactional
     public String saveShortUrl(String url) {
-        if (shortUrlRepository.findByUrl(url).isPresent())
-            throw new ShortUrlCreateException("This post already has a short link");
+        Optional<ShortUrl> optionalShortUrl = shortUrlRepository.findByUrl(url);
+        if (optionalShortUrl.isPresent())
+            return optionalShortUrl.get().getShortUrl();
 
         String uniqueShortUrl = getUniqueShortUrlFromRedis();
 
-        ShortUrl shortUrl = new ShortUrl();
-        shortUrl.setShortUrl(uniqueShortUrl);
-        shortUrl.setUrl(url);
-        shortUrl.setCreatedAt(LocalDateTime.now());
+        ShortUrl shortUrl = buildShortUrl(url, uniqueShortUrl);
 
         shortUrlRepository.save(shortUrl);
 
         return uniqueShortUrl;
+    }   
+
+    private ShortUrl buildShortUrl(String url, String uniqueShortUrl) {
+        ShortUrl shortUrl = new ShortUrl();
+        shortUrl.setShortUrl(uniqueShortUrl);
+        shortUrl.setUrl(url);
+        shortUrl.setCreatedAt(LocalDateTime.now());
+        return shortUrl;
     }
 
     @Transactional

@@ -22,17 +22,19 @@ public class ShortUrlController {
     private final ShortLUrlService shortLUrlService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> crateShortLink(@RequestBody @Positive @NotNull @Valid String url) {
+    public ResponseEntity<String> crateShortLink(@RequestBody @NotNull @Valid String url) {
         String uniqueShortUrl = shortLUrlService.saveShortUrl(url);
         return new ResponseEntity<>(uniqueShortUrl, HttpStatus.OK);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<String> getPostIdByShortUrl(@RequestParam @NotNull String shortUrl) {
+    public ResponseEntity<String> getPostByShortUrl(@RequestParam @NotNull String shortUrl) {
         Optional<ShortUrl> searchedShortUrl = shortLUrlService.getShortUrl(shortUrl);
 
         if (shortUrl.isEmpty())
             throw new RuntimeException("Post does not have a short link");
+
+        System.out.println("success get: " + shortUrl);
 
         return new ResponseEntity<>(searchedShortUrl.get().getUrl(), HttpStatus.OK);
     }

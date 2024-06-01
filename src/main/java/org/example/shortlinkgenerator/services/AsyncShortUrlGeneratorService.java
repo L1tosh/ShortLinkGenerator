@@ -17,6 +17,7 @@ public class AsyncShortUrlGeneratorService {
 
     private static final String REDIS_SHORT_URL_SET_KEY = "short_url_set";
     private static final int COUNT_OF_URL_GENERATE = 50;
+    private static final byte SHORT_URL_LENGTH = 8;
 
     @Async
     public void generateAndSaveShortUrls() {
@@ -35,7 +36,7 @@ public class AsyncShortUrlGeneratorService {
     }
 
     private String generateShortUrl() {
-        return UUID.randomUUID().toString().substring(0, 8);
+        return UUID.randomUUID().toString().substring(0, SHORT_URL_LENGTH);
     }
 
     private void saveUrl(String key, String value) {
