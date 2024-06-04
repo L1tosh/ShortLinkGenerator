@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
@@ -104,7 +105,8 @@ class ShortLinkManagerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertInstanceOf(ShortUrlNotFoundException.class, result.getResolvedException()))
-                .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG, result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG,
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()));
 
         Mockito.verify(shortLinkManagerService).getUrlByShortUrl(shortUrl);
         Mockito.verifyNoMoreInteractions(shortLinkManagerService);
@@ -133,6 +135,7 @@ class ShortLinkManagerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(url))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG, result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG,
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 }

@@ -1,6 +1,5 @@
 package org.example.shortlinkgenerator.controllers;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
