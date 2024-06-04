@@ -1,68 +1,46 @@
 package org.example.shortlinkgenerator.controllers;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import org.example.shortlinkgenerator.models.ShortUrl;
-import org.example.shortlinkgenerator.services.ShortLUrlService;
-import org.example.shortlinkgenerator.utill.ResponseError;
-import org.example.shortlinkgenerator.utill.errors.ShortUrlCreateException;
+import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
+import org.example.shortlinkgenerator.models.ShortLinkManager;
+import org.example.shortlinkgenerator.services.ShortLinkManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api")
 public class ShortUrlController {
-
-    private final ShortLUrlService shortLUrlService;
+    private final ShortLinkManagerService shortLinkManagerService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> crateShortLink(@RequestBody @NotNull @Valid String url) {
-        String uniqueShortUrl = shortLUrlService.saveShortUrl(url);
+    public ResponseEntity<String> crateShortUrl(@RequestBody @NotEmpty String url) {
+        String uniqueShortUrl = shortLinkManagerService.saveShortUrl(url);
         return new ResponseEntity<>(uniqueShortUrl, HttpStatus.OK);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<String> getPostByShortUrl(@RequestParam @NotNull String shortUrl) {
-        Optional<ShortUrl> searchedShortUrl = shortLUrlService.getShortUrl(shortUrl);
+    public ResponseEntity<String> getPostByShortUrl(@RequestParam @NotEmpty @Size(min = 8, max = 8) String shortUrl) {
+        Optional<ShortLinkManager> searchedShortUrl = shortLinkManagerService.getUrlByShortUrl(shortUrl);
 
-        if (shortUrl.isEmpty())
-            throw new RuntimeException("Post does not have a short link");
-
-        System.out.println("success get: " + shortUrl);
+        if (searchedShortUrl.isEmpty())
+            throw new ShortUrlNotFoundException();
 
         return new ResponseEntity<>(searchedShortUrl.get().getUrl(), HttpStatus.OK);
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<Boolean> deleteShortUrl(@RequestBody @NotNull String url) {
-        return new ResponseEntity<>(shortLUrlService.deleteShortUrl(url), HttpStatus.OK);
+    public ResponseEntity<HttpStatus> deleteShortUrl(@RequestBody @NotEmpty String url) {
+        shortLinkManagerService.deleteShortUrl(url);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-    @ExceptionHandler
-    private ResponseEntity<ResponseError> handleException(ShortUrlCreateException e) {
-        ResponseError response = new ResponseError(
-                e.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ResponseError> handleException(RuntimeException e) {
-        ResponseError response = new ResponseError(
-                e.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
 }
+

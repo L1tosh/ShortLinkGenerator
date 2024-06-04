@@ -2,14 +2,20 @@ package org.example.shortlinkgenerator.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "short_url")
-public class ShortUrl {
+public class ShortLinkManager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +27,10 @@ public class ShortUrl {
     private String shortUrl;
 
     @NotNull
-    @Column(name = "url")
+    @Column(name = "url", unique = true)
     private String url;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
 }
