@@ -20,7 +20,7 @@ public class ShortLinkManagerService {
     private final AsyncShortUrlGeneratorService asyncShortUrlGeneratorService;
 
     @Transactional
-    public String saveShortUrl(String url) {
+    public String generateAndSaveShortUrl(String url) {
         Optional<ShortLinkManager> optionalShortUrl = shortLinkManagerRepository.findByUrl(url);
 
         if (optionalShortUrl.isPresent())
@@ -40,7 +40,7 @@ public class ShortLinkManagerService {
     }
 
     @Transactional
-    public void deleteShortUrl(String url) {
+    public void deleteShortLinkManager(String url) {
         if (shortLinkManagerRepository.existsByUrl(url)) {
             shortLinkManagerRepository.deleteByUrl(url);
         } else {

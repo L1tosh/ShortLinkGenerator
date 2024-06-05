@@ -22,7 +22,7 @@ public class ShortUrlController {
 
     @PostMapping("/create")
     public ResponseEntity<String> crateShortUrl(@RequestBody @NotEmpty String url) {
-        String uniqueShortUrl = shortLinkManagerService.saveShortUrl(url);
+        String uniqueShortUrl = shortLinkManagerService.generateAndSaveShortUrl(url);
         return new ResponseEntity<>(uniqueShortUrl, HttpStatus.OK);
     }
 
@@ -38,7 +38,7 @@ public class ShortUrlController {
 
     @PostMapping("/delete")
     public ResponseEntity<HttpStatus> deleteShortUrl(@RequestBody @NotEmpty String url) {
-        shortLinkManagerService.deleteShortUrl(url);
+        shortLinkManagerService.deleteShortLinkManager(url);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

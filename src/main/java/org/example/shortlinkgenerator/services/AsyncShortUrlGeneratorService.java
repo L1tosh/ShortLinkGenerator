@@ -71,6 +71,4 @@ public class AsyncShortUrlGeneratorService {
     private String generateShortUrl() {
         return UUID.randomUUID().toString().substring(0, SHORT_URL_LENGTH);
     }
-
-
 }
