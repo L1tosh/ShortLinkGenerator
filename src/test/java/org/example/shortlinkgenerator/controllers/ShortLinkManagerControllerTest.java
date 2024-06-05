@@ -19,12 +19,13 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class ShortLinkManagerControllerTest {
@@ -48,7 +49,7 @@ class ShortLinkManagerControllerTest {
         String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
         String shortUrl = "abcde123";
 
-        Mockito.when(shortLinkManagerService.saveShortUrl(url)).thenReturn(shortUrl);
+        Mockito.when(shortLinkManagerService.generateAndSaveShortUrl(url)).thenReturn(shortUrl);
 
         mockMvc.perform(post("/api/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +57,7 @@ class ShortLinkManagerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo(shortUrl)));
 
-        Mockito.verify(shortLinkManagerService).saveShortUrl(url);
+        Mockito.verify(shortLinkManagerService).generateAndSaveShortUrl(url);
         Mockito.verifyNoMoreInteractions(shortLinkManagerService);
     }
 
@@ -129,7 +130,7 @@ class ShortLinkManagerControllerTest {
         String url = "valid_url";
 
         Mockito.doThrow(new ShortUrlNotFoundException())
-                .when(shortLinkManagerService).deleteShortUrl(url);
+                .when(shortLinkManagerService).deleteShortLinkManager(url);
 
         mockMvc.perform(post("/api/delete")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +139,7 @@ class ShortLinkManagerControllerTest {
                 .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG,
                         Objects.requireNonNull(result.getResolvedException()).getMessage()));
 
-        Mockito.verify(shortLinkManagerService).deleteShortUrl(url);
+        Mockito.verify(shortLinkManagerService).deleteShortLinkManager(url);
         Mockito.verifyNoMoreInteractions(shortLinkManagerService);
     }
 }
