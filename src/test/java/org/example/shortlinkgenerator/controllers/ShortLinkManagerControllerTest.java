@@ -137,5 +137,8 @@ class ShortLinkManagerControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertEquals(ShortUrlNotFoundException.DEFAULT_MSG,
                         Objects.requireNonNull(result.getResolvedException()).getMessage()));
+
+        Mockito.verify(shortLinkManagerService).deleteShortUrl(url);
+        Mockito.verifyNoMoreInteractions(shortLinkManagerService);
     }
 }
