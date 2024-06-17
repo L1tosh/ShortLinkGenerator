@@ -35,7 +35,7 @@ class AsyncShortUrlGeneratorServiceTest {
     void getUniqueShortUrlFromRedis_RedisHasShortUrl_ReturnsUniqueShortUrl() {
         // given
         final String REDIS_SHORT_URL_SET_KEY = "short_url_set";
-        String shortUrl = "unique12";
+        final String shortUrl = "unique12";
         // when
         when(redisService.popSetElement(REDIS_SHORT_URL_SET_KEY))
                 .thenReturn(shortUrl);
@@ -47,12 +47,46 @@ class AsyncShortUrlGeneratorServiceTest {
     void getUniqueShortUrlFromRedis_RedisHasNotShortUrl_ReturnsUniqueShortUrl() {
         // given
         final String REDIS_SHORT_URL_SET_KEY = "short_url_set";
-        String shortUrl = "unique12";
+        final String shortUrl = "unique12";
         // when
         when(redisService.popSetElement(REDIS_SHORT_URL_SET_KEY))
                 .thenReturn(shortUrl);
         // then
         Assertions.assertThat(service.getUniqueShortUrlFromRedis()).isEqualTo(shortUrl);
+    }
+
+    @Test
+    void getUniqueShortUrlFromRedis_RedisServiceReturnsNull_ReturnsShortUrl() {
+        // given
+        final String REDIS_SHORT_URL_SET_KEY = "short_url_set";
+        final String SHORT_URL = "unique12";
+        final int COUNT_OF_URL_GENERATE = 50;
+        // when
+        when(redisService.popSetElement(REDIS_SHORT_URL_SET_KEY))
+                .thenReturn(null)
+                .thenReturn(SHORT_URL);
+        doNothing().when(redisService).saveShortUrl(anyString(), anyString());
+
+        String result = service.getUniqueShortUrlFromRedis();
+
+        // Then
+        Assertions.assertThat(result).isEqualTo(SHORT_URL);
+        verify(redisService, times(2)).popSetElement("short_url_set");
+        verify(redisService, times(COUNT_OF_URL_GENERATE)).saveShortUrl(anyString(), anyString());
+    }
+
+    @Test
+    void getUniqueShortUrlFromRedis_RedisServiceReturnsNull_ThrowsInterruptedException() {
+        // given
+        final String REDIS_SHORT_URL_SET_KEY = "short_url_set";
+        // when
+        when(redisService.popSetElement(REDIS_SHORT_URL_SET_KEY)).thenReturn(null);
+        doNothing().when(redisService).saveShortUrl(anyString(), anyString());
+
+        // Then
+        Assertions.assertThatThrownBy(() ->
+                service.getUniqueShortUrlFromRedis()
+        ).isInstanceOf(RuntimeException.class);
     }
 
     @Test

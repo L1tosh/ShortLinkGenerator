@@ -26,8 +26,8 @@ class ShortLinkManagerServiceTest {
     @Test
     void generateAndSaveShortUrl_WhenUrlWithShortUrlNotExist_ReturnsShortUrl() {
         // given
-        String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
-        String shortUrl = "unique12";
+        final String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
+        final String shortUrl = "unique12";
 
         // when
         when(shortLinkManagerRepository.findByUrl(url))
@@ -42,8 +42,8 @@ class ShortLinkManagerServiceTest {
     @Test
     void generateAndSaveShortUrl_WhenUrlWithShortUrlExist_ReturnsShortUrl() {
         // given
-        String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
-        String shortUrl = "unique12";
+        final String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
+        final String shortUrl = "unique12";
 
         ShortLinkManager build = ShortLinkManager.builder()
                 .id(1L)
@@ -62,8 +62,8 @@ class ShortLinkManagerServiceTest {
     @Test
     void getUrlByShortUrl_ShortUrlExist_ReturnsPresentOption() {
         // given
-        String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
-        String shortUrl = "unique12";
+        final String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
+        final String shortUrl = "unique12";
 
         ShortLinkManager build = ShortLinkManager.builder()
                 .id(1L)
@@ -80,16 +80,15 @@ class ShortLinkManagerServiceTest {
                 .isEqualTo(build);
 
     }
+
     @Test
     void getUrlByShortUrl_ShortUrlNotExist_ReturnsEmptyOption() {
         // given
-        String shortUrl = "unique12";
+        final String shortUrl = "unique12";
         // when
         when(shortLinkManagerRepository.findByShortUrl(shortUrl))
                 .thenReturn(Optional.empty());
         // then
         Assertions.assertThat(service.getUrlByShortUrl(shortUrl)).isEmpty();
     }
-
-
 }
