@@ -3,7 +3,7 @@ package org.example.shortlinkgenerator.services;
 import lombok.AllArgsConstructor;
 import org.example.shortlinkgenerator.exceptions.ShortUrlCreateException;
 import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
-import org.example.shortlinkgenerator.models.ShortLinkManager;
+import org.example.shortlinkgenerator.entity.ShortLinkManager;
 import org.example.shortlinkgenerator.reposotories.ShortLinkManagerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

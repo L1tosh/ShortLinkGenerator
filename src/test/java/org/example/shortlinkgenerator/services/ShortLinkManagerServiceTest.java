@@ -1,7 +1,7 @@
 package org.example.shortlinkgenerator.services;
 
 import org.assertj.core.api.Assertions;
-import org.example.shortlinkgenerator.models.ShortLinkManager;
+import org.example.shortlinkgenerator.entity.ShortLinkManager;
 import org.example.shortlinkgenerator.reposotories.ShortLinkManagerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

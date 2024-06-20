@@ -1,7 +1,7 @@
 package org.example.shortlinkgenerator.controllers;
 
 import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
-import org.example.shortlinkgenerator.models.ShortLinkManager;
+import org.example.shortlinkgenerator.entity.ShortLinkManager;
 import org.example.shortlinkgenerator.services.ShortLinkManagerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

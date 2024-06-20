@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
-import org.example.shortlinkgenerator.models.ShortLinkManager;
+import org.example.shortlinkgenerator.entity.ShortLinkManager;
 import org.example.shortlinkgenerator.services.ShortLinkManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

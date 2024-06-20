@@ -1,4 +1,4 @@
-package org.example.shortlinkgenerator.models;
+package org.example.shortlinkgenerator.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

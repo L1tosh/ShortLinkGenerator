@@ -19,7 +19,6 @@ public class AsyncShortUrlGeneratorService {
     private static final int RETRY_COUNT = 5;
     private static final int RETRY_DELAY_MS = 200;
 
-
     private static final int COUNT_OF_URL_GENERATE = 50;
     private static final byte SHORT_URL_LENGTH = 8;
 
