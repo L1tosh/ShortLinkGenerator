@@ -1,19 +1,17 @@
 package org.example.shortlinkgenerator.controllers;
 
-import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
 import org.example.shortlinkgenerator.entity.ShortLinkManager;
+import org.example.shortlinkgenerator.exceptions.ShortUrlNotFoundException;
 import org.example.shortlinkgenerator.services.ShortLinkManagerService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -27,23 +25,38 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ShortLinkManagerControllerTest {
+    @Autowired
     MockMvc mockMvc;
-    @Mock
+    @MockBean
     ShortLinkManagerService shortLinkManagerService;
-    @InjectMocks
-    ShortUrlController controller;
 
-    @BeforeEach
-    void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(controller)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    @Test
+    @DisplayName("createShortLink returns Unauthorized 401")
+    void createShortUrl_UnauthenticatedUser_ShouldNotSeeEndpoint() throws Exception {
+        mockMvc.perform(post("/api/create"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
+    @DisplayName("getPostByShortUrl returns Unauthorized 401")
+    void getPostByShortUrl_UnauthenticatedUser_ShouldNotSeeEndpoint() throws Exception {
+        String shortUrl = "abcde123";
+        mockMvc.perform(get("/api/get?shortUrl=" + shortUrl))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("deleteShortUrl returns Unauthorized 401")
+    void deleteShortUrl_UnauthenticatedUser_ShouldNotSeeEndpoint() throws Exception {
+        mockMvc.perform(post("/api/delete"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
     @DisplayName("createShortLink creates a new unique ShortUrl and returns it")
     void createShortUrl_RequestIsValid_ReturnsUniqueShortUrl() throws Exception {
         String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
@@ -62,6 +75,7 @@ class ShortLinkManagerControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("createShortUrl with invalid request body should return 400 Bad Request")
     void createShortUrl_RequestIsInvalid_TrowsBadRequestException() throws Exception {
         mockMvc.perform(post("/api/create")
@@ -71,6 +85,7 @@ class ShortLinkManagerControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("getPostByShortUrl returns url")
     void getPostByShortUrl_RequestWithExistShortUrl_ReturnsUrl() throws Exception {
         String url = "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146a";
@@ -95,6 +110,7 @@ class ShortLinkManagerControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("getPostByShortUrl throw ShortUrlNotFoundException")
     void getPostByShortUrl_RequestWithNotExistShortUrl_ThrowShortUrlNotFoundException() throws Exception {
         String shortUrl = "nonexist";
@@ -114,6 +130,7 @@ class ShortLinkManagerControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("getPostByShortUrl returns status Ok")
     void deleteShortUrl_RequestWithExistUrl_ReturnsStatusOk() throws Exception {
         String url = "valid_url";
@@ -125,6 +142,7 @@ class ShortLinkManagerControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("getPostByShortUrl returns status NotFound")
     void deleteShortUrl_RequestWithNotExistUrl_ReturnsNotFound() throws Exception {
         String url = "valid_url";

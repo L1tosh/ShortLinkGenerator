@@ -23,6 +23,7 @@ class ShortLinkManagerServiceTest {
     @InjectMocks
     ShortLinkManagerService service;
 
+
     @Test
     void generateAndSaveShortUrl_WhenUrlWithShortUrlNotExist_ReturnsShortUrl() {
         // given
